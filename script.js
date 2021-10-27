@@ -75,3 +75,33 @@ const EventEmitter = (function() {
 
   return {on, off, emit};
 })();
+
+const boardFactory = function(){
+  const boardArray = Misc.create2dArray(3, 3);
+  const boardElement = document.querySelector('.board');
+  const boardCells = createBoardCells();
+
+  // create board cells in dom and returns an array containing the elements
+  const createBoardCells = function() {
+    result = Misc.create2dArray(3, 3);
+
+    for(let y = 0; y < result.length; y++) {
+      for(let x = 0; x < result[y].length; x++) {
+        result[y][x] = createElement('button', {'data-index': `${y} ${x}`});
+        boardElement.appendChild(result[y][x]);
+      }
+    }
+
+    return result;
+  };
+
+  const render = function() {
+    for(let y = 0; y < boardArray.length; y++) {
+      for(let x = 0; x < boardArray[y].length; x++) {
+        boardCells[y][x].textContent = boardArray[y][x] || '';
+      }
+    }
+  };
+
+  return { render, boardArray };
+};
