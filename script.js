@@ -130,3 +130,17 @@ const playerFactory = function(name, token) {
 
   return { self: this }
 };
+
+const computerFactory = function(difficulty) {
+  const boardCells = Misc.getBoardCells();
+
+  EventEmitter.on('nextTurn', makeMove);
+
+  const makeMove = function(event) {
+    move = // IMPLEMENT TOMMOROW;
+
+    EventEmitter.emit('playerMove' {player: self, move: move});
+  }
+
+  return { self: this };
+}
