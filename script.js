@@ -105,3 +105,28 @@ const boardFactory = function(){
 
   return { render, boardArray };
 };
+
+const playerFactory = function(name, token) {
+  let isTurn = false; // to check when it is the turn of the player
+
+  const boardCells = Misc.getBoardCells();
+  boardCells.forEach(cell => cell.addEventListener('click', makeMove));
+
+  EventEmitter.on('nextTurn', changeTurn);
+
+  const makeMove = function(event) {
+    if(!isTurn) return;
+
+    move = // IMPLEMENT TOMORROW;
+
+    EventEmitter.emit('playerMove' {player: self, move: move});
+  };
+
+  const changeTurn = function(event) {
+    if (event.player !== self) return;
+
+    isTurn = true;
+  };
+
+  return { self: this }
+};
