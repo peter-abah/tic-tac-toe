@@ -144,3 +144,29 @@ const computerFactory = function(difficulty) {
 
   return { self: this };
 }
+
+const gameFactory = function(board, players) {
+  currentPlayerIndex = 0;
+
+  const start = function() {
+    EventEmitter.emit('nextTurn', {player: players[currentPlayerIndex], board: board.boardArray});
+    EventEmitter.on('playerMove', makeMove);
+
+    board.render();
+  };
+
+  const makeMove(event) {
+    if (event.player !== players[currentPlayerIndex] ||
+      !isValidMove(move, player)) return;
+
+    player = event.player;
+    board.update(move);
+    board.render()
+
+    if (isGameEnd()) endGame();
+
+    EventEmitter.emit('nextTurn', {player: players[++currentPlayerIndex], board: board.boardArray});
+  };
+
+  return { start }
+};
