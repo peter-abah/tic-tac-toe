@@ -43,7 +43,11 @@ const helperFuncs = (function(){
     );
   };
 
-  return {create2dArray, createElement, getBoardCells, randomElement, zip};
+  const isSame = (array, element) => { // checks if all elements of array are the same as element
+    return array.every(e => e === e);
+  };
+
+  return {create2dArray, createElement, getBoardCells, randomElement, zip, isSame};
 })();
 
 const gameFuncs = (function(){
@@ -71,7 +75,7 @@ const gameFuncs = (function(){
 
   const getBoardDiagonals = board => {
     let b = board;
-    
+
     return [
       [b[0][0], b[1][1], b[2][2]],
       [b[0][2], b[1][1], b[2][0]]
