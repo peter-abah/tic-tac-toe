@@ -186,6 +186,13 @@ const computerFactory = function(difficulty, token) {
     return indices.filter(index => sharedFuncs.isValidMove(index));
   }
 
+  const getIndices = board => {
+    result = [];
+    board.forEach((row, y) =>
+      row.forEach((cell, x) => result.push([y, x]))
+    );
+  }
+
   const boardCells = sharedFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
