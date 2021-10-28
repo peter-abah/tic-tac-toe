@@ -1,4 +1,4 @@
-const sharedFuncs = (function(){
+const helperFuncs = (function(){
   // creates a element with tagName and properties and children
   // example createELement(div, {class: 'big', id: '2'}) will return
   // <div class="big", id="2"></div>
@@ -32,12 +32,26 @@ const sharedFuncs = (function(){
 
     return result;
   };
-  
+
+  const randomElement = (array) => {
+    array[Math.floor(Math.random() * array.length)];
+  };
+
+  const zip = function(rows) { // python zip equivalent
+    return rows[0].map(
+      (_, i) => rows.map(row => row[i])
+    );
+  };
+
+  return {create2dArray, createElement, getBoardCells, randomElement, zip};
+})();
+
+const gameFuncs = (function(){
   const isWin = (board, token) => {
     const lines = getLines(board);
     
     for(line of lines) {
-      if(sharedFuncs.isSame(line, token)) return true;
+      if(helperFuncs.isSame(line, token)) return true;
     }
     
     return false;
@@ -51,11 +65,7 @@ const sharedFuncs = (function(){
     return rows + columns + diagonals;
   };
 
-  const randomElement = (array) => {
-    array[Math.floor(Math.random() * array.length)];
-  };
-
-  return {create2dArray, createElement, getBoardCells, randomElement};
+  return {isWin}
 })();
 
 const EventEmitter = (function() {
@@ -101,11 +111,11 @@ const EventEmitter = (function() {
 const boardFactory = function(){
   // create board cells in dom and returns an array containing the elements
   const createBoardCells = function() {
-    result = sharedFuncs.create2dArray(3, 3);
+    result = helperFuncs.create2dArray(3, 3);
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = sharedFuncs.createElement('button', {'data-index': `${y} ${x}`});
+        result[y][x] = helperFuncs.createElement('button', {'data-index': `${y} ${x}`});
         boardElement.appendChild(result[y][x]);
       }
     }
@@ -121,7 +131,7 @@ const boardFactory = function(){
     }
   };
 
-  const boardArray = sharedFuncs.create2dArray(3, 3);
+  const boardArray = helperFuncs.create2dArray(3, 3);
   const boardElement = document.querySelector('.board');
   const boardCells = createBoardCells();
 
@@ -158,7 +168,7 @@ const playerFactory = function(name, token) {
   let isTurn = false; // to check when it is the turn of the player
   const regex = /(\d) (\d)/;
 
-  const boardCells = sharedFuncs.getBoardCells();
+  const boardCells = helperFuncs.getBoardCells();
   addlistenersToCells();
 
   EventEmitter.on('nextTurn', changeTurn);
@@ -214,24 +224,24 @@ const computerFactory = function(difficulty, token) {
     
     for(move of moves) {
       newBoard = simulateMove(board, move, player.token);
-      if(sharedFuncs.isWin(board, player.token)) return move;
+      if(helperFuncs.isWin(board, player.token)) return move;
     }
   };
   
   const simulateMove = (board, [y, x], token) => {
-    boardCopy = sharedFuncs.deepCopy(board);
+    boardCopy = helperFuncs.deepCopy(board);
     boardCopy[y][x] = token;
     return boardCopy;
   };
   
   const randomMove = (board) => {
     moves = getPossibleMoves(board);
-    return sharedFuncs.randomElement(moves);
+    return helperFuncs.randomElement(moves);
   }
 
   const getPossibleMoves = (board) => {
     indices = getIndices(board);
-    return indices.filter(index => sharedFuncs.isValidMove(index));
+    return indices.filter(index => helperFuncs.isValidMove(index));
   }
 
   const getIndices = board => {
@@ -241,7 +251,7 @@ const computerFactory = function(difficulty, token) {
     );
   }
   
-  const boardCells = sharedFuncs.getBoardCells();
+  const boardCells = helperFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
 
