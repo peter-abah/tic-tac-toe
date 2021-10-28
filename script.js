@@ -2,7 +2,7 @@ const Misc = (function(){
   // creates a element with tagName and properties and children
   // example createELement(div, {class: 'big', id: '2'}) will return
   // <div class="big", id="2"></div>
-  const createElement =  function(tagName, properties = {}, children = []) {
+  const createElement =  (tagName, properties = {}, children = []) => {
     let element = document.createElement(tagName);
 
     for(let property of Object.keys(properties)) {
@@ -17,23 +17,23 @@ const Misc = (function(){
     return element;
   };
 
-  const create2dArray = (y, x) {
-    return array = new new Array(y).map(e => new Array(x));
+  const create2dArray = (y, x) => {
+    return new Array(y).fill().map(e => new Array(x));
   };
 
-  const getBoardCells = function() {
+  const getBoardCells = () => {
     result = create2dArray(3, 3);
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = document.querySelector(`[data="${y} ${x}"]`);
+        result[y][x] = document.querySelector(`[data-index="${y} ${x}"]`);
       }
     }
 
     return result;
   };
 
-  return {create2dArray, createElement};
+  return {create2dArray, createElement, getBoardCells};
 })();
 
 const EventEmitter = (function() {
@@ -77,17 +77,13 @@ const EventEmitter = (function() {
 })();
 
 const boardFactory = function(){
-  const boardArray = Misc.create2dArray(3, 3);
-  const boardElement = document.querySelector('.board');
-  const boardCells = createBoardCells();
-
   // create board cells in dom and returns an array containing the elements
   const createBoardCells = function() {
     result = Misc.create2dArray(3, 3);
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = createElement('button', {'data-index': `${y} ${x}`});
+        result[y][x] = Misc.createElement('button', {'data-index': `${y} ${x}`});
         boardElement.appendChild(result[y][x]);
       }
     }
@@ -103,24 +99,30 @@ const boardFactory = function(){
     }
   };
 
+  const boardArray = Misc.create2dArray(3, 3);
+  const boardElement = document.querySelector('.board');
+  const boardCells = createBoardCells();
+
   return { render, boardArray };
 };
 
 const playerFactory = function(name, token) {
   let isTurn = false; // to check when it is the turn of the player
-
-  const boardCells = Misc.getBoardCells();
-  boardCells.forEach(cell => cell.addEventListener('click', makeMove));
-
-  EventEmitter.on('nextTurn', changeTurn);
+  const regex = /(\d) (\d)/;
 
   const makeMove = function(event) {
     if(!isTurn) return;
 
-    move = // IMPLEMENT TOMORROW;
+    move = getMove(event.target);
 
-    EventEmitter.emit('playerMove' {player: self, move: move});
+    EventEmitter.emit('playerMove', {player: self, move: move});
   };
+
+  const getMove = function(cell) {
+    let index = cell.getAttribute('data-index');
+    let move = regex.exec(index).slice(1);
+    return move;
+  }
 
   const changeTurn = function(event) {
     if (event.player !== self) return;
@@ -128,7 +130,20 @@ const playerFactory = function(name, token) {
     isTurn = true;
   };
 
-  return { self: this }
+  const addlistenersToCells = () => {
+    boardCells.forEach(row => 
+      row.forEach( cell => cell.addEventListener('click', makeMove))
+    );
+  }
+
+  const self = {}; // so i will be able to refer to the player in the functions
+
+  const boardCells = Misc.getBoardCells();
+  addlistenersToCells();
+
+  EventEmitter.on('nextTurn', changeTurn);
+
+  return self;
 };
 
 const computerFactory = function(difficulty) {
@@ -139,7 +154,7 @@ const computerFactory = function(difficulty) {
   const makeMove = function(event) {
     move = // IMPLEMENT TOMMOROW;
 
-    EventEmitter.emit('playerMove' {player: self, move: move});
+    EventEmitter.emit('playerMove', {player: self, move: move});
   }
 
   return { self: this };
@@ -155,7 +170,7 @@ const gameFactory = function(board, players) {
     board.render();
   };
 
-  const makeMove(event) {
+  const makeMove = (event) => {
     if (event.player !== players[currentPlayerIndex] ||
       !isValidMove(move, player)) return;
 
