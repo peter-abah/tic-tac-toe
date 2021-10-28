@@ -194,6 +194,12 @@ const computerFactory = function(difficulty) {
     }
   };
   
+  const simulateMove = (board, [y, x], token) => {
+    boardCopy = sharedFuncs.deepCopy(board);
+    boardCopy[y][x] = token;
+    return boardCopy;
+  };
+  
   const boardCells = sharedFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
