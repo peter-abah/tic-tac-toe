@@ -1,4 +1,4 @@
-const Misc = (function(){
+const sharedFuncs = (function(){
   // creates a element with tagName and properties and children
   // example createELement(div, {class: 'big', id: '2'}) will return
   // <div class="big", id="2"></div>
@@ -79,11 +79,11 @@ const EventEmitter = (function() {
 const boardFactory = function(){
   // create board cells in dom and returns an array containing the elements
   const createBoardCells = function() {
-    result = Misc.create2dArray(3, 3);
+    result = sharedFuncs.create2dArray(3, 3);
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = Misc.createElement('button', {'data-index': `${y} ${x}`});
+        result[y][x] = sharedFuncs.createElement('button', {'data-index': `${y} ${x}`});
         boardElement.appendChild(result[y][x]);
       }
     }
@@ -99,7 +99,7 @@ const boardFactory = function(){
     }
   };
 
-  const boardArray = Misc.create2dArray(3, 3);
+  const boardArray = sharedFuncs.create2dArray(3, 3);
   const boardElement = document.querySelector('.board');
   const boardCells = createBoardCells();
 
@@ -107,9 +107,6 @@ const boardFactory = function(){
 };
 
 const playerFactory = function(name, token) {
-  let isTurn = false; // to check when it is the turn of the player
-  const regex = /(\d) (\d)/;
-
   const makeMove = function(event) {
     if(!isTurn) return;
 
@@ -136,28 +133,52 @@ const playerFactory = function(name, token) {
     );
   }
 
-  const self = {}; // so i will be able to refer to the player in the functions
+  let isTurn = false; // to check when it is the turn of the player
+  const regex = /(\d) (\d)/;
 
-  const boardCells = Misc.getBoardCells();
+  const boardCells = sharedFuncs.getBoardCells();
   addlistenersToCells();
 
   EventEmitter.on('nextTurn', changeTurn);
 
+  const self = {}; // so i will be able to refer to the player in the functions
   return self;
 };
 
 const computerFactory = function(difficulty) {
-  const boardCells = Misc.getBoardCells();
+  const makeMove = (event) => {
+    if (event.player !== self) return;
+
+    move = getMove(event.board);
+    EventEmitter.emit('playerMove', {player: self, move: move});
+  };
+
+  const getMove = (board) => {
+    let move;
+
+    switch (difficulty) {
+      case 'easy':
+        move = randomMove(board);
+        break;
+      case 'medium':
+        move = findWinOrLoseMove();
+      case hard:
+        minimaxMove();
+      default:
+        move = randomMove();
+        break;
+    }
+
+    return move;
+  };
+
+  const boardCells = sharedFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
 
-  const makeMove = function(event) {
-    move = // IMPLEMENT TOMMOROW;
+  self = {};
 
-    EventEmitter.emit('playerMove', {player: self, move: move});
-  }
-
-  return { self: this };
+  return self;
 }
 
 const gameFactory = function(board, players) {
