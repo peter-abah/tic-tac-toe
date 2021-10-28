@@ -32,6 +32,24 @@ const sharedFuncs = (function(){
 
     return result;
   };
+  
+  const isWin = (board, token) => {
+    const lines = getLines(board);
+    
+    for(line of lines) {
+      if(sharedFuncs.isSame(line, token)) return true;
+    }
+    
+    return false;
+  };
+  
+  const getLines = board => {
+    const rows = board;
+    const columns = getBoardColumns(board);
+    const diagonals = getBoardDiagonals(board);
+    
+    return rows + columns + diagonals;
+  };
 
   return {create2dArray, createElement, getBoardCells};
 })();
@@ -161,22 +179,50 @@ const computerFactory = function(difficulty) {
         move = randomMove(board);
         break;
       case 'medium':
-        move = findWinOrLoseMove();
+        move = findWinOrBlockingMove(board, opponent);
       case hard:
-        minimaxMove();
+        minimaxMove(board, opponent);
       default:
-        move = randomMove();
+        move = randomMove(board);
         break;
     }
 
     return move;
   };
+  
+  // Returns a move that will lead to a win if available
+  // Or a move that blocks the opponent from winning.
+  // if both are not available, returns a random move.
+  const findWinOrBlockingMove = (board, opponent) => {
+    let move = findWinningMove(board, self);
+    if(move) return move;
+    
+    let move = findWinningMove(board, opponent);
+    if(move) return move;
+    
+    return randomMove();
+  };
 
+  const findWinningMove = (board, player) => {
+    moves = getPossibleMoves(board);
+    
+    for(move of moves) {
+      newBoard = simulateMove(board, move, player.token);
+      if(sharedFuncs.isWin(board, player.token)) return move;
+    }
+  };
+  
+  const simulateMove = (board, [y, x], token) => {
+    boardCopy = sharedFuncs.deepCopy(board);
+    boardCopy[y][x] = token;
+    return boardCopy;
+  };
+  
   const boardCells = sharedFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
 
-  self = {};
+  const self = {};
 
   return self;
 }
