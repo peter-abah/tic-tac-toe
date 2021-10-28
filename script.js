@@ -222,6 +222,16 @@ const computerFactory = function(difficulty, token) {
 
     return move;
   };
+
+  const randomMove = (board) => {
+    moves = getPossibleMoves(board);
+    return helperFuncs.randomElement(moves);
+  };
+
+  const getPossibleMoves = (board) => {
+    indices = getIndices(board);
+    return indices.filter(index => helperFuncs.isValidMove(index));
+  };
   
   // Returns a move that will lead to a win if available
   // Or a move that blocks the opponent from winning.
@@ -250,16 +260,6 @@ const computerFactory = function(difficulty, token) {
     boardCopy[y][x] = token;
     return boardCopy;
   };
-  
-  const randomMove = (board) => {
-    moves = getPossibleMoves(board);
-    return helperFuncs.randomElement(moves);
-  }
-
-  const getPossibleMoves = (board) => {
-    indices = getIndices(board);
-    return indices.filter(index => helperFuncs.isValidMove(index));
-  }
 
   const getIndices = board => {
     result = [];
