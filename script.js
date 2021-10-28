@@ -33,7 +33,11 @@ const sharedFuncs = (function(){
     return result;
   };
 
-  return {create2dArray, createElement, getBoardCells};
+  const randomElement = (array) => {
+    array[Math.floor(Math.random() * array.length)];
+  };
+
+  return {create2dArray, createElement, getBoardCells, randomElement};
 })();
 
 const EventEmitter = (function() {
@@ -141,11 +145,11 @@ const playerFactory = function(name, token) {
 
   EventEmitter.on('nextTurn', changeTurn);
 
-  const self = {}; // so i will be able to refer to the player in the functions
+  const self = {token}; // so i will be able to refer to the player in the functions
   return self;
 };
 
-const computerFactory = function(difficulty) {
+const computerFactory = function(difficulty, token) {
   const makeMove = (event) => {
     if (event.player !== self) return;
 
@@ -172,11 +176,16 @@ const computerFactory = function(difficulty) {
     return move;
   };
 
+  const randomMove = (board) => {
+    moves = getPossibleMoves();
+    return sharedFuncs.randomElement(moves);
+  }
+
   const boardCells = sharedFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
 
-  self = {};
+  self = {token};
 
   return self;
 }
