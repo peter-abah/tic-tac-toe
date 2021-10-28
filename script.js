@@ -1,3 +1,5 @@
+'use strict';
+
 const helperFuncs = (function(){
   // creates a element with tagName and properties and children
   // example createELement(div, {class: 'big', id: '2'}) will return
@@ -18,11 +20,11 @@ const helperFuncs = (function(){
   };
 
   const create2dArray = (y, x) => {
-    return new Array(y).fill().map(e => new Array(x));
+    return new Array(y).fill().map(e => new Array(x).fill());
   };
 
   const getBoardCells = () => {
-    result = create2dArray(3, 3);
+    const result = create2dArray(3, 3);
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
@@ -34,7 +36,7 @@ const helperFuncs = (function(){
   };
 
   const randomElement = (array) => {
-    array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(Math.random() * array.length)];
   };
 
   const zip = function(rows) { // python zip equivalent
@@ -44,7 +46,7 @@ const helperFuncs = (function(){
   };
 
   const isSame = (array, element) => { // checks if all elements of array are the same as element
-    return array.every(e => e === e);
+    let result = array.every(e => e === element);
   };
 
   // cloned an array even if it is multidimensional but 
@@ -54,21 +56,28 @@ const helperFuncs = (function(){
       return value.map(e => deepArrayClone(e))
     }
 
-    return e;
+    return value;
   };
 
-  return {create2dArray, createElement, getBoardCells, randomElement, zip, isSame};
+  return {
+    create2dArray, createElement, getBoardCells, randomElement, zip, isSame, deepArrayClone
+  };
 })();
 
 const gameFuncs = (function(){
+  const isBoardFull = (board) => {
+    return board.every(
+      row => row.every(cell => cell));
+  };
+
   const isValidMove = (board, [y, x]) => {
     return !board[y][x];
   };
 
   const isWin = (board, token) => {
     const lines = getLines(board);
-    
-    for(line of lines) {
+
+    for(let line of lines) {
       if(helperFuncs.isSame(line, token)) return true;
     }
     
@@ -79,12 +88,12 @@ const gameFuncs = (function(){
     const rows = board;
     const columns = getBoardColumns(board);
     const diagonals = getBoardDiagonals(board);
-    
-    return rows + columns + diagonals;
+
+    return rows.concat(columns).concat(diagonals);
   };
 
   const getBoardColumns = board => {
-    return zip(board);
+    return helperFuncs.zip(board);
   };
 
   const getBoardDiagonals = board => {
@@ -96,7 +105,7 @@ const gameFuncs = (function(){
     ];
   };
 
-  return {isValidMove, isWin}
+  return {isValidMove, isWin, isBoardFull}
 })();
 
 const EventEmitter = (function() {
@@ -142,7 +151,7 @@ const EventEmitter = (function() {
 const boardFactory = function(){
   // create board cells in dom and returns an array containing the elements
   const createBoardCells = function() {
-    result = helperFuncs.create2dArray(3, 3);
+    const result = helperFuncs.create2dArray(3, 3);
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
@@ -172,7 +181,7 @@ const boardFactory = function(){
   const boardElement = document.querySelector('.board');
   const boardCells = createBoardCells();
 
-  return { render, boardArray };
+  return { render, update, boardArray };
 };
 
 const playerFactory = function(name, token) {
@@ -220,7 +229,7 @@ const computerFactory = function(difficulty, token) {
 
     const opponent = event.players.filter(player => player != self)[0];
 
-    move = getMove(event.board, opponent);
+    const move = getMove(event.board, opponent);
     EventEmitter.emit('playerMove', {player: self, move: move});
   };
 
@@ -233,8 +242,10 @@ const computerFactory = function(difficulty, token) {
         break;
       case 'medium':
         move = findWinOrBlockingMove(board, opponent);
+        break;
       case hard:
         minimaxMove(board, opponent);
+        break;
       default:
         move = randomMove(board);
         break;
@@ -254,10 +265,12 @@ const computerFactory = function(difficulty, token) {
   };
 
   const getIndices = board => {
-    result = [];
+    const result = [];
     board.forEach((row, y) =>
       row.forEach((cell, x) => result.push([y, x]))
     );
+
+    return result;
   };
   
   // Returns a move that will lead to a win if available
@@ -267,7 +280,7 @@ const computerFactory = function(difficulty, token) {
     let move = findWinningMove(board, self);
     if(move) return move;
     
-    let move = findWinningMove(board, opponent);
+    move = findWinningMove(board, opponent);
     if(move) return move;
     
     return randomMove();
@@ -292,29 +305,38 @@ const computerFactory = function(difficulty, token) {
 
   EventEmitter.on('nextTurn', makeMove);
 
-  const self = {};
+  const self = {token};
   return self;
 };
 
-const gameFactory = function(board, players) {
-  const start = function() {
-    EventEmitter.emit('nextTurn', {player: players[++currentPlayerIndex], board: board.boardArray, players: players});
+const gameFactory = (board, players) => {
+  const start = () => {
     EventEmitter.on('playerMove', makeMove);
-
     board.render();
+
+    EventEmitter.emit('nextTurn', {
+      player: players[currentPlayerIndex], board: board.boardArray, players: players
+    });
   };
 
   const makeMove = (event) => {
+    const move = event.move;
+
     if (event.player !== players[currentPlayerIndex] ||
-      !gameFuncs.isValidMove(move)) return;
+      !gameFuncs.isValidMove(board.boardArray, move)) return;
 
-    player = event.player;
+    const player = event.player;
     board.update(move, player.token);
-    board.render()
+    board.render();
 
-    if (isGameEnd()) endGame();
+    if (isGameEnd()) {
+      endGame();
+      return;
+    };
 
-    EventEmitter.emit('nextTurn', {player: players[++currentPlayerIndex], board: board.boardArray, players: players});
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    debugger
+    EventEmitter.emit('nextTurn', {player: players[currentPlayerIndex], board: board.boardArray, players: players});
   };
 
   const isGameEnd = () => {
@@ -324,7 +346,7 @@ const gameFactory = function(board, players) {
       return true;
     }
 
-    if(gameFuncs.isBoardFull(board)) {
+    if(gameFuncs.isBoardFull(board.boardArray)) {
       isDraw = true;
       return true;
     }
@@ -332,10 +354,20 @@ const gameFactory = function(board, players) {
     return false;
   };
 
+  const endGame = () => {
+    EventEmitter.emit('gameEnd', {board, players, winner, isDraw});
+  };
+
   let winner;
   let isDraw = false;
 
-  currentPlayerIndex = 0;
+  let currentPlayerIndex = 0;
 
-  return { start }
+  return { start };
 };
+
+const board = boardFactory();
+const player1 = computerFactory('easy', 'X');
+const player2 = computerFactory('easy', 'O');
+const game = gameFactory(board, [player1, player2]);
+game.start();
