@@ -65,6 +65,19 @@ const gameFuncs = (function(){
     return rows + columns + diagonals;
   };
 
+  const getBoardColumns = board => {
+    return zip(board);
+  };
+
+  const getBoardDiagonals = board => {
+    let b = board;
+    
+    return [
+      [b[0][0], b[1][1], b[2][2]],
+      [b[0][2], b[1][1], b[2][0]]
+    ];
+  };
+
   return {isWin}
 })();
 
