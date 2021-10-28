@@ -32,6 +32,24 @@ const sharedFuncs = (function(){
 
     return result;
   };
+  
+  const isWin = (board, token) => {
+    const lines = getLines(board);
+    
+    for(line of lines) {
+      if(sharedFuncs.isSame(line, token)) return true;
+    }
+    
+    return false;
+  };
+  
+  const getLines = board => {
+    const rows = board;
+    const columns = getBoardColumns(board);
+    const diagonals = getBoardDiagonals(board);
+    
+    return rows + columns + diagonals;
+  };
 
   return {create2dArray, createElement, getBoardCells};
 })();
@@ -204,7 +222,7 @@ const computerFactory = function(difficulty) {
 
   EventEmitter.on('nextTurn', makeMove);
 
-  self = {};
+  const self = {};
 
   return self;
 }
