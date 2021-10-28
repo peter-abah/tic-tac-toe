@@ -171,11 +171,13 @@ const computerFactory = function(difficulty, token) {
   const makeMove = (event) => {
     if (event.player !== self) return;
 
-    move = getMove(event.board);
+    const opponent = event.players.filter(player => player != self)[0];
+
+    move = getMove(event.board, opponent);
     EventEmitter.emit('playerMove', {player: self, move: move});
   };
 
-  const getMove = (board) => {
+  const getMove = (board, opponent) => {
     let move;
 
     switch (difficulty) {
@@ -207,7 +209,6 @@ const computerFactory = function(difficulty, token) {
     return randomMove();
   };
 
-<<<<<<< HEAD
   const findWinningMove = (board, player) => {
     moves = getPossibleMoves(board);
     
@@ -223,7 +224,6 @@ const computerFactory = function(difficulty, token) {
     return boardCopy;
   };
   
-=======
   const randomMove = (board) => {
     moves = getPossibleMoves(board);
     return sharedFuncs.randomElement(moves);
