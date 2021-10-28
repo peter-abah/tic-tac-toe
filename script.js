@@ -51,7 +51,11 @@ const sharedFuncs = (function(){
     return rows + columns + diagonals;
   };
 
-  return {create2dArray, createElement, getBoardCells};
+  const randomElement = (array) => {
+    array[Math.floor(Math.random() * array.length)];
+  };
+
+  return {create2dArray, createElement, getBoardCells, randomElement};
 })();
 
 const EventEmitter = (function() {
@@ -159,11 +163,11 @@ const playerFactory = function(name, token) {
 
   EventEmitter.on('nextTurn', changeTurn);
 
-  const self = {}; // so i will be able to refer to the player in the functions
+  const self = {token}; // so i will be able to refer to the player in the functions
   return self;
 };
 
-const computerFactory = function(difficulty) {
+const computerFactory = function(difficulty, token) {
   const makeMove = (event) => {
     if (event.player !== self) return;
 
@@ -203,6 +207,7 @@ const computerFactory = function(difficulty) {
     return randomMove();
   };
 
+<<<<<<< HEAD
   const findWinningMove = (board, player) => {
     moves = getPossibleMoves(board);
     
@@ -218,12 +223,29 @@ const computerFactory = function(difficulty) {
     return boardCopy;
   };
   
+=======
+  const randomMove = (board) => {
+    moves = getPossibleMoves(board);
+    return sharedFuncs.randomElement(moves);
+  }
+
+  const getPossibleMoves = (board) => {
+    indices = getIndices(board);
+    return indices.filter(index => sharedFuncs.isValidMove(index));
+  }
+
+  const getIndices = board => {
+    result = [];
+    board.forEach((row, y) =>
+      row.forEach((cell, x) => result.push([y, x]))
+    );
+  }
+  
   const boardCells = sharedFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
 
   const self = {};
-
   return self;
 }
 
