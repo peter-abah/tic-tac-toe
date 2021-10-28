@@ -177,8 +177,13 @@ const computerFactory = function(difficulty, token) {
   };
 
   const randomMove = (board) => {
-    moves = getPossibleMoves();
+    moves = getPossibleMoves(board);
     return sharedFuncs.randomElement(moves);
+  }
+
+  const getPossibleMoves = (board) => {
+    indices = getIndices(board);
+    return indices.filter(index => sharedFuncs.isValidMove(index));
   }
 
   const boardCells = sharedFuncs.getBoardCells();
