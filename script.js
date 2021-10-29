@@ -46,7 +46,7 @@ const helperFuncs = (function(){
   };
 
   const isSame = (array, element) => { // checks if all elements of array are the same as element
-    let result = array.every(e => e === element);
+    return array.every(e => e === element);
   };
 
   // cloned an array even if it is multidimensional but 
@@ -76,7 +76,7 @@ const gameFuncs = (function(){
 
   const isWin = (board, token) => {
     const lines = getLines(board);
-
+    
     for(let line of lines) {
       if(helperFuncs.isSame(line, token)) return true;
     }
@@ -164,17 +164,17 @@ const boardFactory = function(){
   };
 
   const render = function() {
-    for(let y = 0; y < boardArray.length; y++) {
-      for(let x = 0; x < boardArray[y].length; x++) {
-        boardCells[y][x].textContent = boardArray[y][x] || '';
+    for(let y = 0; y < this.boardArray.length; y++) {
+      for(let x = 0; x < this.boardArray[y].length; x++) {
+        boardCells[y][x].textContent = this.boardArray[y][x] || '';
       }
     }
   };
 
-  const update = ([y, x], token) => {
-    let newBoardArray = helperFuncs.deepArrayClone(boardArray);
+  const update = function([y, x], token) {
+    let newBoardArray = helperFuncs.deepArrayClone(this.boardArray);
     newBoardArray[y][x] = token;
-    boardArray = newBoardArray;
+    this.boardArray = newBoardArray;
   };
 
   let boardArray = helperFuncs.create2dArray(3, 3);
@@ -188,7 +188,7 @@ const playerFactory = function(name, token) {
   const makeMove = function(event) {
     if(!isTurn) return;
 
-    move = getMove(event.target);
+    const move = getMove(event.target);
 
     EventEmitter.emit('playerMove', {player: self, move: move});
   };
@@ -283,20 +283,19 @@ const computerFactory = function(difficulty, token) {
     move = findWinningMove(board, opponent);
     if(move) return move;
     
-    return randomMove();
+    return randomMove(board);
   };
 
   const findWinningMove = (board, player) => {
-    moves = getPossibleMoves(board);
-    
-    for(move of moves) {
-      newBoard = simulateMove(board, move, player.token);
-      if(helperFuncs.isWin(board, player.token)) return move;
+    const moves = getPossibleMoves(board);
+    for(let move of moves) {
+      let newBoard = simulateMove(board, move, player.token);
+      if(gameFuncs.isWin(newBoard, player.token)) return move;
     }
   };
   
   const simulateMove = (board, [y, x], token) => {
-    boardCopy = helperFuncs.deepArrayClone(board);
+    let boardCopy = helperFuncs.deepArrayClone(board);
     boardCopy[y][x] = token;
     return boardCopy;
   };
@@ -365,9 +364,3 @@ const gameFactory = (board, players) => {
 
   return { start };
 };
-
-const board = boardFactory();
-const player1 = computerFactory('easy', 'X');
-const player2 = computerFactory('easy', 'O');
-const game = gameFactory(board, [player1, player2]);
-game.start();
