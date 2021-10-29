@@ -164,17 +164,18 @@ const boardFactory = function(){
   };
 
   const render = function() {
-    for(let y = 0; y < boardArray.length; y++) {
-      for(let x = 0; x < boardArray[y].length; x++) {
-        boardCells[y][x].textContent = boardArray[y][x] || '';
+    for(let y = 0; y < this.boardArray.length; y++) {
+      for(let x = 0; x < this.boardArray[y].length; x++) {
+        boardCells[y][x].textContent = this.boardArray[y][x] || '';
       }
     }
   };
 
-  const update = ([y, x], token) => {
-    let newBoardArray = helperFuncs.deepArrayClone(boardArray);
+  const update = function([y, x], token) {
+    //console.log(this);
+    let newBoardArray = helperFuncs.deepArrayClone(this.boardArray);
     newBoardArray[y][x] = token;
-    boardArray = newBoardArray;
+    this.boardArray = newBoardArray;
   };
 
   let boardArray = helperFuncs.create2dArray(3, 3);
@@ -188,7 +189,7 @@ const playerFactory = function(name, token) {
   const makeMove = function(event) {
     if(!isTurn) return;
 
-    move = getMove(event.target);
+    const move = getMove(event.target);
 
     EventEmitter.emit('playerMove', {player: self, move: move});
   };
@@ -328,6 +329,7 @@ const gameFactory = (board, players) => {
     const player = event.player;
     board.update(move, player.token);
     board.render();
+    console.log(board);
 
     if (isGameEnd()) {
       endGame();
@@ -367,7 +369,7 @@ const gameFactory = (board, players) => {
 };
 
 const board = boardFactory();
-const player1 = computerFactory('easy', 'X');
+const player1 = playerFactory('easy', 'X');
 const player2 = computerFactory('easy', 'O');
 const game = gameFactory(board, [player1, player2]);
 game.start();
