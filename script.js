@@ -355,6 +355,13 @@ const gameFactory = (board, players) => {
 
   const endGame = () => {
     EventEmitter.emit('gameEnd', {board, players, winner, isDraw});
+    reset();
+  };
+  
+  const reset = () => {
+    currentPlayerIndex = 0;
+    winner = undefined;
+    isDraw = false;
   };
 
   let winner;
