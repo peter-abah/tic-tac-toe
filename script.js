@@ -155,7 +155,7 @@ const boardFactory = function(){
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = helperFuncs.createElement('button', {'data-index': `${y} ${x}`});
+        result[y][x] = helperFuncs.createElement('button', {'class': 'board__cell', 'data-index': `${y} ${x}`});
         boardElement.appendChild(result[y][x]);
       }
     }
@@ -164,24 +164,31 @@ const boardFactory = function(){
   };
 
   const render = function() {
-    for(let y = 0; y < this.boardArray.length; y++) {
-      for(let x = 0; x < this.boardArray[y].length; x++) {
-        boardCells[y][x].textContent = this.boardArray[y][x] || '';
+    for(let y = 0; y < self.boardArray.length; y++) {
+      for(let x = 0; x < self.boardArray[y].length; x++) {
+        boardCells[y][x].textContent = self.boardArray[y][x] || '';
       }
     }
   };
 
   const update = function([y, x], token) {
-    let newBoardArray = helperFuncs.deepArrayClone(this.boardArray);
+    let newBoardArray = helperFuncs.deepArrayClone(self.boardArray);
     newBoardArray[y][x] = token;
-    this.boardArray = newBoardArray;
+    self.boardArray = newBoardArray;
   };
+  
+  const reset = function() {
+    self.boardArray = boardArray = helperFuncs.create2dArray(3, 3);
+  }
 
   let boardArray = helperFuncs.create2dArray(3, 3);
   const boardElement = document.querySelector('.board');
   const boardCells = createBoardCells();
+  
+  EventEmitter.on('gameEnd', reset);
 
-  return { render, update, boardArray };
+  self = { render, update, boardArray };
+  return self;
 };
 
 const playerFactory = function(name, token) {
@@ -209,6 +216,10 @@ const playerFactory = function(name, token) {
     boardCells.forEach(row => 
       row.forEach( cell => cell.addEventListener('click', makeMove))
     );
+  };
+  
+  const reset = () => {
+    isTurn = false;
   }
 
   let isTurn = false; // to check when it is the turn of the player
@@ -218,6 +229,7 @@ const playerFactory = function(name, token) {
   addlistenersToCells();
 
   EventEmitter.on('nextTurn', changeTurn);
+  EventEmitter.on('gameEnd', reset);
 
   const self = {token}; // so i will be able to refer to the player in the functions
   return self;
@@ -243,8 +255,8 @@ const computerFactory = function(difficulty, token) {
       case 'medium':
         move = findWinOrBlockingMove(board, opponent);
         break;
-      case hard:
-        minimaxMove(board, opponent);
+      case 'hard':
+        move = minimaxMove(board, opponent);
         break;
       default:
         move = randomMove(board);
@@ -299,8 +311,6 @@ const computerFactory = function(difficulty, token) {
     boardCopy[y][x] = token;
     return boardCopy;
   };
-  
-  const boardCells = helperFuncs.getBoardCells();
 
   EventEmitter.on('nextTurn', makeMove);
 
@@ -334,7 +344,6 @@ const gameFactory = (board, players) => {
     };
 
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    debugger
     EventEmitter.emit('nextTurn', {player: players[currentPlayerIndex], board: board.boardArray, players: players});
   };
 
@@ -355,6 +364,13 @@ const gameFactory = (board, players) => {
 
   const endGame = () => {
     EventEmitter.emit('gameEnd', {board, players, winner, isDraw});
+    reset();
+  };
+  
+  const reset = () => {
+    currentPlayerIndex = 0;
+    winner = undefined;
+    isDraw = false;
   };
 
   let winner;
@@ -364,3 +380,8 @@ const gameFactory = (board, players) => {
 
   return { start };
 };
+
+let board = boardFactory();
+let player1 = computerFactory('+7+78', 'S');
+let player2 = computerFactory('medium', 'D')
+gameFactory(board, [player1, player2]).start()
