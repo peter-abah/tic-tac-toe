@@ -1,4 +1,8 @@
 body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
   box-sizing: border-box;
   font-family: Lato, sans-serif;
   background-color: var(--primary-color);
@@ -11,4 +15,6 @@ body {
 
 button {
   display: block;
+  border: none;
+  border-radius: 0;
 }

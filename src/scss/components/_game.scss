@@ -2,4 +2,13 @@
   &--hidden {
     display: none;
   }
+
+  &__button {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    padding: .75rem .5rem;
+    font-weight: 900;
+    background-color: var(--secondary-color);
+    color: var(--text-secondary);
+  }
 }

@@ -42,6 +42,9 @@ table {
 }
 
 body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   font-family: Lato, sans-serif;
   background-color: var(--primary-color);
@@ -54,10 +57,38 @@ body {
 
 button {
   display: block;
+  border: none;
+  border-radius: 0;
+}
+
+.header {
+  margin-bottom: 4rem;
+}
+.header__title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.start--hidden {
+  display: none;
+}
+.start__buttons {
+  width: 80vw;
+  max-width: 20rem;
+  margin: 0 auto;
 }
 
 .game--hidden {
   display: none;
+}
+.game__button {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 0.5rem;
+  font-weight: 900;
+  background-color: var(--secondary-color);
+  color: var(--text-secondary);
 }
 
 .board {
@@ -79,4 +110,11 @@ button {
   font-family: fantasy;
   background-color: var(--primary-color);
   color: var(--text-primary);
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
 }
