@@ -7,27 +7,31 @@
   <title>Tic Tac Toe</title>
 </head>
 <body>
-  <header>
-    <h1>Tic Tac Toe</h1>
+  <header class="header">
+    <h1 class="header___title">Tic Tac Toe</h1>
   </header>
 
   <main>
-    <div>
-      <button type="button">PLAY WITH FRIENDS</button>
-      <button type="button">PLAY WITH COMPUTER</button>
+    <div class="prompt">
+      <button class="game__button" type="button">PLAY WITH FRIENDS</button>
+      <button type="game__button">PLAY WITH COMPUTER</button>
     </div>
 
-    <div class="game">
+    <div class="game game--hidden">
       <div class="board">
         
       </div>
 
-      <div>
-        <button type="button">NEW ROUND</button>
-        <button type="button">NEW GAME</button>
+      <div class="game__buttons">
+        <button type="button" class="game__button">NEW ROUND</button>
+        <button type="button" class="game__button">NEW GAME</button>
       </div>
     </div>
   </main>
+
+  <footer>
+    <p>Created by <a href="https://github.com/peter-abah">Peter Abah</a></p>
+  </footer>
 
   <script type="text/javascript" src="script.js"></script>
 </body>
