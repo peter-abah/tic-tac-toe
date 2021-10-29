@@ -155,7 +155,7 @@ const boardFactory = function(){
 
     for(let y = 0; y < result.length; y++) {
       for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = helperFuncs.createElement('button', {'data-index': `${y} ${x}`});
+        result[y][x] = helperFuncs.createElement('button', {'class': 'board__cell', 'data-index': `${y} ${x}`});
         boardElement.appendChild(result[y][x]);
       }
     }

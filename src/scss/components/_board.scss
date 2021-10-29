@@ -1,0 +1,20 @@
+.board {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: .5rem;
+  width: 18.75rem;
+  max-width: 90vw;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: var(--text-primary)
+  
+  &__cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.125rem;
+    font-family: fantasy;
+    background-color: var(--primary-color);
+    color: var(--text-primary);
+  }
+}
