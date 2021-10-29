@@ -380,8 +380,3 @@ const gameFactory = (board, players) => {
 
   return { start };
 };
-
-let board = boardFactory();
-let player1 = computerFactory('+7+78', 'S');
-let player2 = computerFactory('medium', 'D')
-gameFactory(board, [player1, player2]).start()

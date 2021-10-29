@@ -4,8 +4,9 @@
   gap: .5rem;
   width: 18.75rem;
   max-width: 90vw;
+  height: 18.75rem;
+  max-height: 90vw;
   margin: 0 auto;
-  padding: 2rem 1rem;
   background-color: var(--text-primary);
   
   &__cell {
