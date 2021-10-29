@@ -1,0 +1,39 @@
+:root {
+  --primary-color: #fafafa;
+  --text-primary: #111;
+}
+
+body {
+  box-sizing: border-box;
+  font-family: Lato, sans-serif;
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+* {
+  box-sizing: inherit;
+}
+
+button {
+  display: block;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  width: 18.75rem;
+  max-width: 90vw;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: var(--text-primary);
+}
+.board__cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.125rem;
+  font-family: fantasy;
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
