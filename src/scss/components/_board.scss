@@ -1,21 +1,28 @@
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: .5rem;
-  width: 80vw;
-  max-width: 25rem;
-  height: 80vw;
-  max-height: 25rem;
   margin: 0 auto;
-  background-color: var(--board-border-color);
+  width: fit-content;
   
   &__cell {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 6.25rem;
+    height: 6.25rem;
     font-size: 1.125rem;
     font-family: fantasy;
-    background-color: var(--primary-color);
+    background-color: inherit;
     color: var(--text-primary);
+
+    &--border-x {
+      border-left: 4px solid var(--board-border-color);
+      border-right: 4px solid var(--board-border-color);
+    }
+
+    &--border-y {
+      border-top: 4px solid var(--board-border-color);
+      border-bottom: 4px solid var(--board-border-color);
+    }
   }
 }
