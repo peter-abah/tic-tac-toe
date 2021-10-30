@@ -1,5 +1,6 @@
 .board {
   display: grid;
+  font-family: var(--game-font);
   grid-template-columns: 1fr 1fr 1fr;
   margin: 0 auto;
   width: fit-content;

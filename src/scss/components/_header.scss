@@ -2,7 +2,9 @@
   margin: 4rem auto;
 
   &__title {
-    font-size: 2.5rem;
+    font-family: var(--display-font);
+    font-size: 3rem;
+    letter-spacing: 3px;
     font-weight: 900;
     text-align: center;
   }

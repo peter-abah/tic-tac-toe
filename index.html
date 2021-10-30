@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Patrick+Hand&family=Righteous&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <title>Tic Tac Toe</title>
 </head>
@@ -13,14 +16,14 @@
     </header>
 
     <main>
-      <div class="start start--hidden">
+      <div class="start">
         <div class="start__buttons">
           <button class="game__button" type="button">PLAY WITH FRIENDS</button>
           <button class="game__button" type="button">PLAY WITH COMPUTER</button>
         </div>
       </div>
 
-      <div class="game">
+      <div class="game game--hidden">
         <div class="board">
           <button class="board__cell" type="button" data-index="0 0"></button>
           <button class="board__cell board__cell--border-x" type="button" data-index="0 1"></button>
@@ -41,8 +44,8 @@
     </main>
   </div>
 
-  <footer>
-    <p>Created by <a href="https://github.com/peter-abah">Peter Abah</a></p>
+  <footer class="footer">
+    <p class="footer__text">Created by <a href="https://github.com/peter-abah">Peter Abah</a></p>
   </footer>
 
   <script type="text/javascript" src="script.js"></script>

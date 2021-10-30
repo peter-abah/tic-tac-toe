@@ -4,7 +4,7 @@ body {
   flex-direction: column;
 
   box-sizing: border-box;
-  font-family: Lato, sans-serif;
+  font-family: var(--sans-font), sans-serif;
   background-color: var(--primary-color);
   color: var(--text-primary);
 }
@@ -17,4 +17,9 @@ button {
   display: block;
   border: none;
   border-radius: 0;
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
 }

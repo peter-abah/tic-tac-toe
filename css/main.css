@@ -4,6 +4,9 @@
   --text-primary: #fefefe;
   --text-secondary: #242424;
   --board-border-color: #1b6bf7;
+  --display-font: Righteous, sans-serif;
+  --sans-font: Roboto;
+  --game-font: "Patrick Hand";
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
@@ -46,7 +49,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  font-family: Lato, sans-serif;
+  font-family: var(--sans-font), sans-serif;
   background-color: var(--primary-color);
   color: var(--text-primary);
 }
@@ -59,13 +62,20 @@ button {
   display: block;
   border: none;
   border-radius: 0;
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
 }
 
 .header {
   margin: 4rem auto;
 }
 .header__title {
-  font-size: 2.5rem;
+  font-family: var(--display-font);
+  font-size: 3rem;
+  letter-spacing: 3px;
   font-weight: 900;
   text-align: center;
 }
@@ -91,7 +101,7 @@ button {
   width: 100%;
   margin-bottom: 1.5rem;
   padding: 0.75rem 0.5rem;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 1.2rem;
   background-color: var(--secondary-color);
   color: var(--text-secondary);
@@ -99,6 +109,7 @@ button {
 
 .board {
   display: grid;
+  font-family: var(--game-font);
   grid-template-columns: 1fr 1fr 1fr;
   margin: 0 auto;
   width: -webkit-fit-content;
@@ -123,6 +134,16 @@ button {
 .board__cell--border-y {
   border-top: 4px solid var(--board-border-color);
   border-bottom: 4px solid var(--board-border-color);
+}
+
+.footer {
+  padding: 1.2rem 0;
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+.footer__text {
+  text-align: center;
+  font-size: 1.125rem;
 }
 
 .main-wrapper {
