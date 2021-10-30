@@ -2,12 +2,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: .5rem;
-  width: 18.75rem;
-  max-width: 90vw;
-  height: 18.75rem;
-  max-height: 90vw;
+  width: 80vw;
+  max-width: 25rem;
+  height: 80vw;
+  max-height: 25rem;
   margin: 0 auto;
-  background-color: var(--text-primary);
+  background-color: var(--board-border-color);
   
   &__cell {
     display: flex;

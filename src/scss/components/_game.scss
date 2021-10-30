@@ -3,6 +3,12 @@
     display: none;
   }
 
+  &__buttons {
+    width: 80vw;
+    max-width: 25rem;
+    margin: 3rem auto;
+  }
+
   &__button {
     width: 100%;
     margin-bottom: 1.5rem;

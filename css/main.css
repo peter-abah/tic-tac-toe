@@ -62,7 +62,7 @@ button {
 }
 
 .header {
-  margin-bottom: 4rem;
+  margin: 4rem auto;
 }
 .header__title {
   font-size: 1.5rem;
@@ -82,6 +82,11 @@ button {
 .game--hidden {
   display: none;
 }
+.game__buttons {
+  width: 80vw;
+  max-width: 25rem;
+  margin: 3rem auto;
+}
 .game__button {
   width: 100%;
   margin-bottom: 1.5rem;
@@ -95,12 +100,12 @@ button {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0.5rem;
-  width: 18.75rem;
-  max-width: 90vw;
-  height: 18.75rem;
-  max-height: 90vw;
+  width: 80vw;
+  max-width: 25rem;
+  height: 80vw;
+  max-height: 25rem;
   margin: 0 auto;
-  background-color: var(--text-primary);
+  background-color: var(--board-border-color);
 }
 .board__cell {
   display: flex;
