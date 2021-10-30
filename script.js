@@ -150,18 +150,18 @@ const EventEmitter = (function() {
 
 const boardFactory = function(){
   // create board cells in dom and returns an array containing the elements
-  const createBoardCells = function() {
-    const result = helperFuncs.create2dArray(3, 3);
+  // const createBoardCells = function() {
+  //   const result = helperFuncs.create2dArray(3, 3);
 
-    for(let y = 0; y < result.length; y++) {
-      for(let x = 0; x < result[y].length; x++) {
-        result[y][x] = helperFuncs.createElement('button', {'class': 'board__cell', 'data-index': `${y} ${x}`});
-        boardElement.appendChild(result[y][x]);
-      }
-    }
+  //   for(let y = 0; y < result.length; y++) {
+  //     for(let x = 0; x < result[y].length; x++) {
+  //       result[y][x] = helperFuncs.createElement('button', {'class': 'board__cell', 'data-index': `${y} ${x}`});
+  //       boardElement.appendChild(result[y][x]);
+  //     }
+  //   }
 
-    return result;
-  };
+  //   return result;
+  // };
 
   const render = function() {
     for(let y = 0; y < self.boardArray.length; y++) {
@@ -183,7 +183,7 @@ const boardFactory = function(){
 
   let boardArray = helperFuncs.create2dArray(3, 3);
   const boardElement = document.querySelector('.board');
-  const boardCells = createBoardCells();
+  const boardCells = helperFuncs.getBoardCells();
   
   EventEmitter.on('gameEnd', reset);
 
