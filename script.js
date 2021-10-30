@@ -110,7 +110,7 @@ const gameFuncs = (function(){
 
 const EventEmitter = (function() {
   let uid = -1;
-  const events = {};
+  let events = {};
 
   const on = (name, func) => {
 
@@ -135,6 +135,10 @@ const EventEmitter = (function() {
     return false;
   };
 
+  const clearEvents = () => {
+    events = {};
+  }
+
   const emit = (name, ...parameters) => {
     if (!events[name]) return false;
 
@@ -145,24 +149,10 @@ const EventEmitter = (function() {
     return true;
   };
 
-  return {on, off, emit};
+  return {on, off, emit, clearEvents};
 })();
 
 const boardFactory = function(){
-  // create board cells in dom and returns an array containing the elements
-  // const createBoardCells = function() {
-  //   const result = helperFuncs.create2dArray(3, 3);
-
-  //   for(let y = 0; y < result.length; y++) {
-  //     for(let x = 0; x < result[y].length; x++) {
-  //       result[y][x] = helperFuncs.createElement('button', {'class': 'board__cell', 'data-index': `${y} ${x}`});
-  //       boardElement.appendChild(result[y][x]);
-  //     }
-  //   }
-
-  //   return result;
-  // };
-
   const render = function() {
     for(let y = 0; y < self.boardArray.length; y++) {
       for(let x = 0; x < self.boardArray[y].length; x++) {
@@ -185,7 +175,7 @@ const boardFactory = function(){
   const boardElement = document.querySelector('.board');
   const boardCells = helperFuncs.getBoardCells();
   
-  EventEmitter.on('gameEnd', reset);
+  EventEmitter.on('newRound', reset)
 
   self = { render, update, boardArray };
   return self;
@@ -229,7 +219,7 @@ const playerFactory = function(name, token) {
   addlistenersToCells();
 
   EventEmitter.on('nextTurn', changeTurn);
-  EventEmitter.on('gameEnd', reset);
+  EventEmitter.on('newRound', reset);
 
   const self = {token}; // so i will be able to refer to the player in the functions
   return self;
@@ -321,6 +311,8 @@ const computerFactory = function(difficulty, token) {
 const gameFactory = (board, players) => {
   const start = () => {
     EventEmitter.on('playerMove', makeMove);
+    EventEmitter.on('newRound', reset);
+
     board.render();
 
     EventEmitter.emit('nextTurn', {
@@ -363,14 +355,16 @@ const gameFactory = (board, players) => {
   };
 
   const endGame = () => {
-    EventEmitter.emit('gameEnd', {board, players, winner, isDraw});
-    reset();
+    EventEmitter.emit('gameEnd', {winner, isDraw});
   };
   
   const reset = () => {
     currentPlayerIndex = 0;
     winner = undefined;
     isDraw = false;
+
+    EventEmitter.emit('nextTurn', {player: players[currentPlayerIndex], board: board.boardArray, players: players});
+    board.render();
   };
 
   let winner;
@@ -380,3 +374,44 @@ const gameFactory = (board, players) => {
 
   return { start };
 };
+
+const gameUI = (() => {
+  const addEventListenersToButtons = () => {
+    playBtns.forEach(btn => 
+      btn.addEventListener('click', startGame)
+    );
+
+    newGameBtn.addEventListener('click', newGame);
+    newRoundBtn.addEventListener('click', newRound);
+  };
+
+  const startGame = event => {
+    [startArea, gameArea].forEach(elem => elem.classList.toggle('hidden'));
+
+    let gameType = event.target.getAttribute('data-game-type');
+
+    let board = boardFactory();
+    let player1 = playerFactory('', 'X');
+    let player2 = gameType === 'computer' ? computerFactory('medium', 'O') : playerFactory('', 'O');
+    let game = gameFactory(board, [player1, player2]);
+
+    game.start()
+  };
+
+  const newGame = event => {
+    EventEmitter.clearEvents();
+    [startArea, gameArea].forEach(elem => elem.classList.toggle('hidden'));
+  };
+
+  const newRound = event => {
+    EventEmitter.emit('newRound');
+  };
+
+  const startArea = document.querySelector('.start');
+  const gameArea = document.querySelector('.game');
+
+  const playBtns = [...document.querySelectorAll('.start__button')];
+  const newGameBtn = document.getElementById('new-game-btn');
+  const newRoundBtn = document.getElementById('new-round-btn');
+  addEventListenersToButtons();
+})();

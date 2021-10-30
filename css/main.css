@@ -80,18 +80,12 @@ a {
   text-align: center;
 }
 
-.start--hidden {
-  display: none;
-}
 .start__buttons {
   width: 80vw;
   max-width: 20rem;
   margin: 0 auto;
 }
 
-.game--hidden {
-  display: none;
-}
 .game__buttons {
   width: 80vw;
   max-width: 25rem;
@@ -150,4 +144,8 @@ a {
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
+}
+
+.hidden {
+  display: none;
 }
