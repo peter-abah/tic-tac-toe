@@ -246,7 +246,7 @@ const computerFactory = function(difficulty, token) {
         move = findWinOrBlockingMove(board, opponent);
         break;
       case 'hard':
-        move = minimaxMove(board, opponent);
+        move = randomMove(board);
         break;
       default:
         move = randomMove(board);
