@@ -193,12 +193,12 @@ const playerFactory = function(name, token) {
   const getMove = function(cell) {
     let index = cell.getAttribute('data-index');
     let move = regex.exec(index).slice(1);
+    isTurn = false;
     return move;
   }
 
   const changeTurn = function(event) {
     if (event.player !== self) return;
-
     isTurn = true;
   };
 
@@ -324,7 +324,12 @@ const gameFactory = (board, players) => {
     const move = event.move;
 
     if (event.player !== players[currentPlayerIndex] ||
-      !gameFuncs.isValidMove(board.boardArray, move)) return;
+      !gameFuncs.isValidMove(board.boardArray, move)) {
+      EventEmitter.emit('nextTurn', 
+        {player: players[currentPlayerIndex], board: board.boardArray, players: players}
+      );
+      return;
+    }
 
     const player = event.player;
     board.update(move, player.token);
@@ -401,17 +406,36 @@ const gameUI = (() => {
   const newGame = event => {
     EventEmitter.clearEvents();
     [startArea, gameArea].forEach(elem => elem.classList.toggle('hidden'));
+    init();
   };
 
   const newRound = event => {
     EventEmitter.emit('newRound');
   };
 
+  const displayMessage = ({player, winner, isDraw}) => {
+    if (winner) {
+      messageArea.textContent = `${winner.token} won this round`;
+    } else if (isDraw) {
+      messageArea.textContent = 'Draw!!!';
+    } else {
+      messageArea.textContent = `${player.token}'s turn`;
+    }
+  };
+
+  const init = () => {
+    EventEmitter.on('nextTurn', displayMessage);
+    EventEmitter.on('gameEnd', displayMessage);
+  };
+
   const startArea = document.querySelector('.start');
   const gameArea = document.querySelector('.game');
+  const messageArea = document.querySelector('.game__message')
 
   const playBtns = [...document.querySelectorAll('.start__button')];
   const newGameBtn = document.getElementById('new-game-btn');
   const newRoundBtn = document.getElementById('new-round-btn');
+  
   addEventListenersToButtons();
+  init();
 })();

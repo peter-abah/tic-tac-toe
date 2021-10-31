@@ -86,10 +86,15 @@ a {
   margin: 0 auto;
 }
 
+.game__message {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+}
 .game__buttons {
   width: 80vw;
   max-width: 25rem;
-  margin: 3rem auto;
+  margin: 4rem auto 0;
 }
 .game__button {
   width: 100%;
