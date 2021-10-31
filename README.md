@@ -28,6 +28,7 @@ This is a browser version of the Tic Tac Toe. Players can play against themselve
 
 # Useful Resources
 - [Learning JavaScript Design Patterns By Addy Osmani](https://addyosmani.com/resources/essentialjsdesignpatterns/book/)
+- [Minimax Algorithm in Game Theory | Set 1 (Introduction) - GeeksforGeeks](https://www.google.com/url?q=https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-1-introduction/&sa=U&ved=2ahUKEwiP-8zqlfXzAhVk4uAKHeovANEQFnoECAkQAg&usg=AOvVaw1ke08cyvlI4nZqNgpddZXx)
 
 # Acknowledgements
 - [The Odin Project](https://www.theodinproject.com)
