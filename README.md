@@ -21,7 +21,6 @@ This is a browser version of the Tic Tac Toe. Players can play against themselve
   - Easy: The computer randomly selects a valid move
   - Medium: The computer selects a winning move if there is one, or a move to prevent the opponent from winning. If none of those moves exist, it selects a random move.
   - Hard: The computer uses minimax algorithm to select the best possible move.
-- Users can watch the computer play against itself. *Not done yet*.
 
 # What I learnt
 - The purpose of the project to to use factory functions and module pattern to organise the code. I tried to follow the pattern although I don't know if I got it right.
