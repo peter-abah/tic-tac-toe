@@ -7,7 +7,7 @@
 
   &__buttons {
     width: 80vw;
-    max-width: 25rem;
+    max-width: 24rem;
     margin: 4rem auto 0;
   }
 
@@ -19,5 +19,20 @@
     font-size: 1.2rem;
     background-color: var(--secondary-color);
     color: var(--text-secondary);
+    transition: transform 150ms ease-in;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+
+    &:active {
+      transform: translateY(2px);
+    }
   }
+}
+
+.computer-selection {
+  width: 80vw;
+  max-width: 24rem;
+  margin: 0 auto;
 }

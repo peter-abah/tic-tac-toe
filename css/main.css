@@ -63,6 +63,7 @@ button {
   border: none;
   border-radius: 0;
   font-family: inherit;
+  cursor: pointer;
 }
 
 a {
@@ -93,7 +94,7 @@ a {
 }
 .game__buttons {
   width: 80vw;
-  max-width: 25rem;
+  max-width: 24rem;
   margin: 4rem auto 0;
 }
 .game__button {
@@ -104,6 +105,19 @@ a {
   font-size: 1.2rem;
   background-color: var(--secondary-color);
   color: var(--text-secondary);
+  transition: transform 150ms ease-in;
+}
+.game__button:hover {
+  transform: scale(1.02);
+}
+.game__button:active {
+  transform: translateY(2px);
+}
+
+.computer-selection {
+  width: 80vw;
+  max-width: 24rem;
+  margin: 0 auto;
 }
 
 .board {
@@ -140,6 +154,7 @@ a {
   color: var(--text-primary);
 }
 .footer__text {
+  margin-bottom: 1rem;
   text-align: center;
   font-size: 1.125rem;
 }

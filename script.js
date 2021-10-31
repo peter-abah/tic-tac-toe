@@ -367,6 +367,7 @@ const gameFactory = (board, players) => {
     currentPlayerIndex = 0;
     winner = undefined;
     isDraw = false;
+    players.reverse();
 
     EventEmitter.emit('nextTurn', {player: players[currentPlayerIndex], board: board.boardArray, players: players});
     board.render();
@@ -383,21 +384,39 @@ const gameFactory = (board, players) => {
 const gameUI = (() => {
   const addEventListenersToButtons = () => {
     playBtns.forEach(btn => 
-      btn.addEventListener('click', startGame)
+      btn.addEventListener('click', showSelection)
+    );
+
+    computerSelectBtns.forEach(btn => 
+      btn.addEventListener('click', computerStart)
     );
 
     newGameBtn.addEventListener('click', newGame);
     newRoundBtn.addEventListener('click', newRound);
   };
 
-  const startGame = event => {
-    [startArea, gameArea].forEach(elem => elem.classList.toggle('hidden'));
-
+  const showSelection = event => {
     let gameType = event.target.getAttribute('data-game-type');
 
+    if (gameType === 'human') {
+      [startArea, gameArea].forEach(elem => elem.classList.toggle('hidden'));
+      startGame(gameType);
+      return;
+    }
+
+    [startArea, computerSelection].forEach(elem => elem.classList.toggle('hidden'));
+  }
+
+  const computerStart = event => {
+    let mode = event.target.getAttribute('data-mode');
+    [computerSelection, gameArea].forEach(elem => elem.classList.toggle('hidden'));
+    startGame('computer', mode);
+  }
+
+  const startGame = (gameType, mode) => {
     let board = boardFactory();
     let player1 = playerFactory('', 'X');
-    let player2 = gameType === 'computer' ? computerFactory('medium', 'O') : playerFactory('', 'O');
+    let player2 = gameType === 'computer' ? computerFactory(mode, 'O') : playerFactory('', 'O');
     let game = gameFactory(board, [player1, player2]);
 
     game.start()
@@ -430,12 +449,14 @@ const gameUI = (() => {
 
   const startArea = document.querySelector('.start');
   const gameArea = document.querySelector('.game');
+  const computerSelection = document.querySelector('.computer-selection')
   const messageArea = document.querySelector('.game__message')
 
   const playBtns = [...document.querySelectorAll('.start__button')];
+  const computerSelectBtns = [...document.querySelectorAll('.computer-selection__btn')]
   const newGameBtn = document.getElementById('new-game-btn');
   const newRoundBtn = document.getElementById('new-round-btn');
-  
+
   addEventListenersToButtons();
   init();
 })();
