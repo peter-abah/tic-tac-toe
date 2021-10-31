@@ -65,7 +65,7 @@ const helperFuncs = (function(){
 })();
 
 const gameFuncs = (function(){
-  const isBoardFull = (board) => {
+  const isDraw = (board) => {
     return board.every(
       row => row.every(cell => cell));
   };
@@ -105,7 +105,7 @@ const gameFuncs = (function(){
     ];
   };
 
-  return {isValidMove, isWin, isBoardFull}
+  return {isValidMove, isWin, isDraw}
 })();
 
 const EventEmitter = (function() {
@@ -230,9 +230,11 @@ const computerFactory = function(difficulty, token) {
     if (event.player !== self) return;
 
     const opponent = event.players.filter(player => player != self)[0];
-
-    const move = getMove(event.board, opponent);
-    EventEmitter.emit('playerMove', {player: self, move: move});
+    
+    setTimeout(() => {
+      const move = getMove(event.board, opponent);
+      EventEmitter.emit('playerMove', {player: self, move: move});
+    }, 100);
   };
 
   const getMove = (board, opponent) => {
@@ -246,7 +248,7 @@ const computerFactory = function(difficulty, token) {
         move = findWinOrBlockingMove(board, opponent);
         break;
       case 'hard':
-        move = randomMove(board);
+        move = minimaxMove(board, opponent);
         break;
       default:
         move = randomMove(board);
@@ -301,9 +303,44 @@ const computerFactory = function(difficulty, token) {
     boardCopy[y][x] = token;
     return boardCopy;
   };
+  
+  const minimaxMove = (board, opponent) => {
+    let result = {};
+    let moves = getPossibleMoves(board);
+    
+    moves.forEach(move => {
+      let newBoard = simulateMove(board, move, token);
+      let score = minimax(newBoard, self, opponent);
+      result[score] = move;
+    });
+    
+    let maxScore = Math.max(...Object.keys(result));
+    return result[maxScore];
+  };
+  
+  const minimax = (board, opponent, player) => {
+    if(gameFuncs.isWin(board, token)) return 10;
+    else if(gameFuncs.isWin(board, opponent.token)) return -10;
+    else if(gameFuncs.isDraw(board)) return 0;
+    
+    let moves = getPossibleMoves(board);
+    let scores = [];
+    
+    moves.forEach(move => {
+      let newBoard = simulateMove(board, move, player.token);
+      let score = minimax(newBoard, player, opponent);
+      scores.push(score);
+    });
+    
+    if(player.token === token) {
+      return Math.max(...scores);
+    } else {
+      return Math.min(...scores);
+    }
+  };
 
   EventEmitter.on('nextTurn', makeMove);
-
+  
   const self = {token};
   return self;
 };
@@ -322,7 +359,7 @@ const gameFactory = (board, players) => {
 
   const makeMove = (event) => {
     const move = event.move;
-
+    
     if (event.player !== players[currentPlayerIndex] ||
       !gameFuncs.isValidMove(board.boardArray, move)) {
       EventEmitter.emit('nextTurn', 
@@ -351,7 +388,7 @@ const gameFactory = (board, players) => {
       return true;
     }
 
-    if(gameFuncs.isBoardFull(board.boardArray)) {
+    if(gameFuncs.isDraw(board.boardArray)) {
       isDraw = true;
       return true;
     }
